@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lauko žurnalas: augalų medžioklė</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EEDE;
+    --paper-deep:#E7DDBE;
+    --ink:#2A2E1F;
+    --ink-soft:#5B5E48;
+    --moss:#3F5A38;
+    --moss-dark:#2B3F26;
+    --gold:#B4842A;
+    --clay:#9C4E37;
+    --line:#CBBE93;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top left, #F8F3E4 0%, var(--paper) 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+  }
+  .journal{
+    width:100%;
+    max-width:460px;
+  }
+
+  /* Header */
+  .masthead{
+    text-align:left;
+    margin-bottom:18px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+  }
+  .masthead .kicker{
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--moss);
+    margin:0 0 2px;
+    font-weight:600;
+  }
+  .masthead h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:30px;
+    line-height:1.05;
+    margin:0;
+    color:var(--ink);
+  }
+  .masthead p{
+    margin:8px 0 0;
+    font-size:14px;
+    color:var(--ink-soft);
+    max-width:36ch;
+  }
+
+  /* Progress trail */
+  .trail{
+    display:flex;
+    gap:7px;
+    margin:18px 0 20px;
+    flex-wrap:wrap;
+  }
+  .trail-dot{
+    width:26px;height:26px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    background:transparent;
+    flex-shrink:0;
+    transition:all .25s ease;
+  }
+  .trail-dot.found{
+    background:var(--moss);
+    border-color:var(--moss);
+    color:var(--paper);
+  }
+  .trail-dot.current{
+    border-color:var(--gold);
+    color:var(--gold);
+    font-weight:700;
+  }
+
+  /* Card */
+  .card{
+    background:#FBF8EF;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px 24px 24px;
+    position:relative;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .plant-icon{
+    width:120px;height:120px;
+    margin:0 auto 10px;
+    display:block;
+  }
+  .plant-icon svg{width:100%;height:100%;}
+  .plant-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    text-align:center;
+    margin:0 0 4px;
+    color:var(--moss-dark);
+  }
+  .plant-clue{
+    text-align:center;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:0 auto 6px;
+    max-width:32ch;
+  }
+  .hint-toggle{
+    display:block;
+    margin:6px auto 0;
+    background:none;
+    border:none;
+    color:var(--moss);
+    text-decoration:underline;
+    text-underline-offset:3px;
+    font-size:13px;
+    cursor:pointer;
+    padding:4px;
+  }
+  .hint-box{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    background:var(--paper-deep);
+    border-radius:10px;
+    padding:10px 12px;
+    margin-top:8px;
+    display:none;
+    line-height:1.45;
+  }
+  .hint-box.open{display:block;}
+  .warn-tag{
+    display:block;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--clay);
+    margin-top:8px;
+    font-weight:600;
+  }
+
+  .actions{
+    margin-top:22px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  button.primary, label.primary{
+    background:var(--moss);
+    color:var(--paper);
+    border:none;
+    border-radius:10px;
+    padding:14px 18px;
+    font-family:'Work Sans', sans-serif;
+    font-size:15.5px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:background .15s ease;
+  }
+  button.primary:active, label.primary:active{background:var(--moss-dark);}
+  button.ghost{
+    background:none;
+    border:1.5px solid var(--line);
+    color:var(--ink-soft);
+    border-radius:10px;
+    padding:12px 18px;
+    font-family:'Work Sans', sans-serif;
+    font-size:14.5px;
+    cursor:pointer;
+  }
+  input[type=file]{display:none;}
+
+  /* Loading state */
+  .loading-wrap{text-align:center;padding:10px 0 4px;}
+  .thumb{
+    width:100%;
+    max-width:280px;
+    border-radius:10px;
+    display:block;
+    margin:0 auto 16px;
+    border:1px solid var(--line);
+  }
+  .spinner{
+    width:26px;height:26px;
+    border:3px solid var(--line);
+    border-top-color:var(--moss);
+    border-radius:50%;
+    margin:0 auto 10px;
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{font-size:14px;color:var(--ink-soft);}
+
+  /* Result state */
+  .result-banner{
+    text-align:center;
+    padding:6px 4px 2px;
+  }
+  .result-emblem{
+    width:54px;height:54px;
+    border-radius:50%;
+    margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;
+  }
+  .result-emblem.yes{background:var(--moss);color:var(--paper);}
+  .result-emblem.no{background:#EADFC2;color:var(--clay);}
+  .result-title{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .result-feedback{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    max-width:34ch;
+    margin:0 auto 4px;
+  }
+
+  /* Finish state */
+  .finish-wrap{text-align:center;}
+  .finish-score{
+    font-family:'Fraunces', serif;
+    font-size:52px;
+    font-weight:600;
+    color:var(--moss-dark);
+    margin:6px 0 0;
+    line-height:1;
+  }
+  .finish-score span{font-size:24px;color:var(--ink-soft);font-family:'Work Sans',sans-serif;font-weight:500;}
+  .finish-label{font-size:13px;letter-spacing:.03em;color:var(--ink-soft);margin-bottom:2px;}
+  .recap{
+    text-align:left;
+    margin-top:20px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .recap-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 0;
+    font-size:14px;
+  }
+  .recap-mark{
+    width:20px;height:20px;
+    border-radius:50%;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;
+    font-weight:700;
+  }
+  .recap-mark.yes{background:var(--moss);color:var(--paper);}
+  .recap-mark.no{background:#EADFC2;color:var(--clay);}
+
+  .footnote{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    opacity:.75;
+    margin-top:16px;
+    line-height:1.5;
+  }
+  .error-text{
+    color:var(--clay);
+    font-size:13.5px;
+    text-align:center;
+    margin-top:10px;
+  }
+</style>
+</head>
+<body>
+<div class="journal">
+
+  <div class="masthead">
+    <p class="kicker">Lauko žurnalas</p>
+    <h1>Augalų medžioklė</h1>
+    <p>Susirask kiekvieną augalą lauke, nufotografuok jį, o Claude patikrins, ar radai tą, kurio reikėjo.</p>
+  </div>
+
+  <div class="trail" id="trail"></div>
+
+  <div class="card" id="card"></div>
+
+  <p class="footnote">Nuotrauka nusiunčiama Claude dirbtiniam intelektui atpažinimui — ji niekur nesaugoma. Geriausiai veikia dienos šviesoje, lauke.</p>
+</div>
+
+<script>
+// Pakeisk į savo Cloudflare Worker adresą, gautą po diegimo (žr. worker.js failą).
+const API_PROXY_URL = "https://augalu-proxy.jasalinis-jokubas.workers.dev";
+
+const PLANTS = [
+  {
+    id:'azuolas', name:'Ąžuolas', clue:'Medis banguotais, apvaliais lapų kraštais ir gilėmis rudenį.',
+    hint:'Ieškok parke ar miško pakraštyje — ąžuolai dažnai auga pavieniui, dideli ir šakoti.',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4"><path d="M50 12c-6 8-14 10-14 20 0 6 5 8 3 14-3 8-12 8-12 18 0 8 8 12 16 9-2 6 3 11 9 9v-8m-2-62c6 8 14 10 14 20 0 6-5 8-3 14 3 8 12 8 12 18 0 8-8 12-16 9 2 6-3 11-9 9v-8m0-62v50" stroke-linejoin="round" stroke-linecap="round"/></svg>`
+  },
+  {
+    id:'klevas', name:'Klevas', clue:'Medis su žvaigždės formos, smailiais lapais.',
+    hint:'Dažnas gatvėse, kiemuose ir parkuose — vasarą lapai žali, rudenį paraudonuoja ar pagelsta.',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M50 15 L58 35 L78 28 L66 45 L84 55 L62 56 L68 78 L50 63 L32 78 L38 56 L16 55 L34 45 L22 28 L42 35 Z"/><path d="M50 63v22"/></svg>`
+  },
+  {
+    id:'berzas', name:'Beržas', clue:'Medis baltu, lygiu kamienu su juodais brūkšneliais ir smulkiais dantytais lapeliais.',
+    hint:'Baltą žievę pastebėsi iš tolo — beržai dažnai auga miško pakraščiuose ar pievų prieigose.',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M50 78V28"/><path d="M50 30c10-4 16-12 14-20-8 2-16 8-14 20z"/><path d="M50 30c-10-4-16-12-14-20 8 2 16 8 14 20z"/><path d="M42 20h4M44 26h4M40 14h3"/></svg>`
+  },
+  {
+    id:'kastonas', name:'Kaštonas', clue:'Medis su dideliais, delno formos lapais iš 5–7 lapelių.',
+    hint:'Dažnas prie mokyklų ir alėjose — pavasarį žydi baltais ar rausvais žvakutės formos žiedynais.',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><g transform="translate(50,60)"><path d="M0 0 L0 -42"/><path d="M0 0 L-24 -30"/><path d="M0 0 L-14 -38"/><path d="M0 0 L14 -38"/><path d="M0 0 L24 -30"/></g></svg>`
+  },
+  {
+    id:'kiaulpiene', name:'Kiaulpienė', clue:'Ryškiai geltona gėlė su daugybe siaurų žiedlapių, vėliau virsta baltu pūkuotu kamuoliuku.',
+    hint:'Auga beveik bet kur pievoje, pakelėje ar kieme — vieną iš labiausiai paplitusių gėlių rasti nesunku.',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><circle cx="50" cy="38" r="6" fill="var(--gold)" stroke="none"/>${Array.from({length:14}).map((_,i)=>{const a=i*(360/14)*Math.PI/180;const x2=50+16*Math.cos(a),y2=38+16*Math.sin(a);const x1=50+7*Math.cos(a),y1=38+7*Math.sin(a);return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;}).join('')}<path d="M50 54v24" stroke="var(--moss-dark)"/><path d="M50 66c-8-2-12 2-14 8M50 72c8-2 12 2 14 8" stroke="var(--moss-dark)"/></svg>`
+  },
+  {
+    id:'dobilas', name:'Dobilas', clue:'Žemas augalas su trimis apvaliais lapeliais ant vieno stiebelio.',
+    hint:'Pasidairyk pievoje ar žolėje — jei pasiseks, gali rasti ir retą keturlapį!',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round"><path d="M50 55V80"/><circle cx="50" cy="40" r="13"/><circle cx="36" cy="58" r="13"/><circle cx="64" cy="58" r="13"/></svg>`
+  },
+  {
+    id:'ramune', name:'Ramunė', clue:'Balta gėlė su geltona apvalia šerdimi viduryje.',
+    hint:'Ieškok saulėtoje pievoje ar pakelėje — žiedai dažnai auga grupėmis.',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${Array.from({length:10}).map((_,i)=>{const a=i*36*Math.PI/180;const x=50+15*Math.cos(a),y=38+15*Math.sin(a);return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4" ry="9" transform="rotate(${i*36} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;}).join('')}<circle cx="50" cy="38" r="7" fill="var(--gold)" stroke="none"/><path d="M50 54v26"/></svg>`
+  },
+  {
+    id:'dilgele', name:'Dilgėlė', clue:'Žalias augalas priešpriešiniais, dantytais lapais, dengtas smulkiais plaukeliais.',
+    hint:'Dažnai auga pašiūrių, tvorų ar griovių pakraščiuose tankiais sąžalynais. Lieskis atsargiai!',
+    warn:'⚠ Nelieskite plikomis rankomis — dilgina!',
+    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M50 85V20"/><path d="M50 30l-16-8 3 10-9 2 12 6z"/><path d="M50 30l16-8-3 10 9 2-12 6z"/><path d="M50 48l-15-7 3 9-8 2 11 5z"/><path d="M50 48l15-7-3 9 8 2-11 5z"/></svg>`
+  }
+];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let order = shuffle(PLANTS);
+let idx = 0;
+let results = []; // {plant, match}
+
+const cardEl = document.getElementById('card');
+const trailEl = document.getElementById('trail');
+
+function renderTrail(){
+  trailEl.innerHTML = order.map((p,i)=>{
+    const found = results[i]!==undefined;
+    let cls='trail-dot';
+    if(found && results[i].match) cls+=' found';
+    if(i===idx && !found) cls+=' current';
+    return `<div class="${cls}">${found ? (results[i].match?'✓':'·') : (i+1)}</div>`;
+  }).join('');
+}
+
+function renderHunt(){
+  const p = order[idx];
+  renderTrail();
+  cardEl.innerHTML = `
+    <div class="plant-icon">${p.icon}</div>
+    <h2 class="plant-name">${p.name}</h2>
+    <p class="plant-clue">${p.clue}</p>
+    <button class="hint-toggle" id="hintBtn">Kur ieškoti?</button>
+    <div class="hint-box" id="hintBox">${p.hint}</div>
+    ${p.warn?`<span class="warn-tag">${p.warn}</span>`:''}
+    <div class="actions">
+      <label class="primary" for="fileInput">📷 Fotografuoti augalą</label>
+      <input type="file" id="fileInput" accept="image/*" capture="environment">
+      <button class="ghost" id="skipBtn">Praleisti šį augalą</button>
+    </div>
+  `;
+  document.getElementById('hintBtn').onclick = ()=>{
+    document.getElementById('hintBox').classList.toggle('open');
+  };
+  document.getElementById('fileInput').onchange = onPhotoChosen;
+  document.getElementById('skipBtn').onclick = ()=>{
+    results[idx] = {plant:p, match:false, skipped:true};
+    idx++;
+    idx < order.length ? renderHunt() : renderFinish();
+  };
+}
+
+function resizeImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 760;
+        const scale = Math.min(1, maxW/img.width);
+        const w = Math.round(img.width*scale);
+        const h = Math.round(img.height*scale);
+        const canvas = document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg', 0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function onPhotoChosen(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const p = order[idx];
+  const dataUrl = await resizeImage(file);
+
+  cardEl.innerHTML = `
+    <div class="loading-wrap">
+      <img class="thumb" src="${dataUrl}">
+      <div class="spinner"></div>
+      <p class="loading-text">Tikrinama, ar tai ${p.name.toLowerCase()}...</p>
+    </div>
+  `;
+
+  const base64 = dataUrl.split(',')[1];
+
+  try{
+    const response = await fetch(API_PROXY_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:300,
+        system:"Esi draugiškas gamtos gidas, padedantis vaikams žaidime atpažinti augalus. Tau bus pateikta nuotrauka ir augalo, kurio ieško žaidėjas, pavadinimas. Atsakyk TIK JSON objektu, be jokio papildomo teksto, kodo blokų ar paaiškinimų, tiksliai tokiu formatu: {\"match\": true arba false, \"feedback\": \"draugiškas, trumpas paaiškinimas lietuviškai, ne daugiau kaip 2 sakiniai, kodėl tai tas augalas arba ne, be kartojant taisykles\"}. Būk malonus net kai atsakymas neigiamas, ir jei nuotraukoje apskritai nėra jokio augalo, laikyk tai match:false.",
+        messages:[{
+          role:"user",
+          content:[
+            {type:"image", source:{type:"base64", media_type:"image/jpeg", data:base64}},
+            {type:"text", text:`Ar šioje nuotraukoje matomas augalas: ${p.name}?`}
+          ]
+        }]
+      })
+    });
+    const data = await response.json();
+    const textBlock = (data.content||[]).find(b=>b.type==='text');
+    let parsed;
+    try{
+      const clean = (textBlock?.text||'').replace(/```json|```/g,'').trim();
+      parsed = JSON.parse(clean);
+    }catch(e){
+      parsed = {match:false, feedback:"Nepavyko atpažinti atsakymo. Pabandyk fotografuoti dar kartą, geresnėje šviesoje."};
+    }
+    results[idx] = {plant:p, match:!!parsed.match, feedback:parsed.feedback||''};
+    renderResult();
+  }catch(err){
+    cardEl.innerHTML = `
+      <div class="loading-wrap">
+        <img class="thumb" src="${dataUrl}">
+        <p class="error-text">Nepavyko susisiekti su patikros tarnyba. Patikrink interneto ryšį ir bandyk dar kartą.</p>
+      </div>
+      <div class="actions">
+        <button class="primary" id="retryBtn" style="cursor:pointer;">Bandyti dar kartą</button>
+      </div>
+    `;
+    document.getElementById('retryBtn').onclick = renderHunt;
+  }
+}
+
+function renderResult(){
+  const r = results[idx];
+  renderTrail();
+  cardEl.innerHTML = `
+    <div class="result-banner">
+      <div class="result-emblem ${r.match?'yes':'no'}">${r.match?'✓':'?'}</div>
+      <h2 class="result-title">${r.match ? 'Radai tikrą augalą!' : 'Dar ne visai'}</h2>
+      <p class="result-feedback">${r.feedback}</p>
+    </div>
+    <div class="actions">
+      ${!r.match ? '<label class="primary" for="fileInput2">📷 Fotografuoti dar kartą</label><input type="file" id="fileInput2" accept="image/*" capture="environment">' : ''}
+      <button class="${r.match?'primary':'ghost'}" id="nextBtn" ${r.match?'style="cursor:pointer;"':''}>${idx+1 < order.length ? 'Kitas augalas' : 'Baigti žaidimą'}</button>
+    </div>
+  `;
+  if(!r.match){
+    document.getElementById('fileInput2').onchange = onPhotoChosen;
+  }
+  document.getElementById('nextBtn').onclick = ()=>{
+    idx++;
+    idx < order.length ? renderHunt() : renderFinish();
+  };
+}
+
+function renderFinish(){
+  const foundCount = results.filter(r=>r.match).length;
+  trailEl.innerHTML = order.map((p,i)=>{
+    const found = results[i] && results[i].match;
+    return `<div class="trail-dot ${found?'found':''}">${found?'✓':'·'}</div>`;
+  }).join('');
+  cardEl.innerHTML = `
+    <div class="finish-wrap">
+      <p class="finish-label">Ekspedicija baigta</p>
+      <p class="finish-score">${foundCount}<span> / ${order.length} augalų rasta</span></p>
+      <div class="recap">
+        ${order.map((p,i)=>{
+          const found = results[i] && results[i].match;
+          return `<div class="recap-row"><span class="recap-mark ${found?'yes':'no'}">${found?'✓':'–'}</span>${p.name}</div>`;
+        }).join('')}
+      </div>
+      <div class="actions">
+        <button class="primary" id="restartBtn" style="cursor:pointer;">Naujas maršrutas</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('restartBtn').onclick = ()=>{
+    order = shuffle(PLANTS);
+    idx = 0;
+    results = [];
+    renderHunt();
+  };
+}
+
+renderHunt();
+</script>
+</body>
+</html>
