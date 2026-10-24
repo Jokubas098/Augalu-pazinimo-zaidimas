@@ -456,7 +456,7 @@ async function onPhotoChosen(ev){
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
-        model:"claude-sonnet-4-6",
+        model:"claude-haiku-5-5",
         max_tokens:300,
         system:"Esi draugiškas gamtos gidas, padedantis vaikams žaidime atpažinti augalus. Tau bus pateikta nuotrauka ir augalo, kurio ieško žaidėjas, pavadinimas. Atsakyk TIK JSON objektu, be jokio papildomo teksto, kodo blokų ar paaiškinimų, tiksliai tokiu formatu: {\"match\": true arba false, \"feedback\": \"draugiškas, trumpas paaiškinimas lietuviškai, ne daugiau kaip 2 sakiniai, kodėl tai tas augalas arba ne, be kartojant taisykles\"}. Būk malonus net kai atsakymas neigiamas, ir jei nuotraukoje apskritai nėra jokio augalo, laikyk tai match:false.",
         messages:[{
