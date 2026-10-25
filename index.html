@@ -761,7 +761,7 @@ async function identify(dataUrl){
     const res = await fetch(API_PROXY_URL, {
       method:'POST', headers:{'Content-Type':'application/json'}, signal:ctrl.signal,
       body: JSON.stringify({
-        model: MODEL, max_tokens: 400, system: SYSTEM_PROMPT,
+        model: MODEL, max_tokens: 500, thinking: {type: 'disabled'}, system: SYSTEM_PROMPT,
         messages:[{role:'user', content:[
           {type:'image', source:{type:'base64', media_type:'image/jpeg', data:dataUrl.split(',')[1]}},
           {type:'text', text:'Atpažink augalą šioje nuotraukoje.'}
