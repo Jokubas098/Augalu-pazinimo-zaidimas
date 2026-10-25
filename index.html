@@ -2,550 +2,923 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lauko žurnalas: augalų medžioklė</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F1F5EE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Augalų šimtukas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F3EEDE;
-    --paper-deep:#E7DDBE;
-    --ink:#2A2E1F;
-    --ink-soft:#5B5E48;
-    --moss:#3F5A38;
-    --moss-dark:#2B3F26;
-    --gold:#B4842A;
-    --clay:#9C4E37;
-    --line:#CBBE93;
-    --radius:14px;
+    --bg:#F1F5EE;
+    --card:#FFFFFF;
+    --ink:#17261C;
+    --ink-soft:#5A6B5F;
+    --line:#DCE5D8;
+    --leaf:#4E9A2E;
+    --leaf-deep:#2F6B2A;
+    --leaf-tint:#E4F0DC;
+    --sun:#F2B632;
+    --clay:#C0562F;
+    --cam:#0B140E;
+    --radius:16px;
+    --nav-h:76px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:
-      radial-gradient(ellipse at top left, #F8F3E4 0%, var(--paper) 55%),
-      var(--paper);
+    background:var(--bg);
     color:var(--ink);
-    font-family:'Work Sans', sans-serif;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    padding:28px 14px 60px;
-  }
-  .journal{
-    width:100%;
-    max-width:460px;
-  }
-
-  /* Header */
-  .masthead{
-    text-align:left;
-    margin-bottom:18px;
-    border-bottom:2px solid var(--ink);
-    padding-bottom:14px;
-  }
-  .masthead .kicker{
-    font-size:12px;
-    letter-spacing:0.04em;
-    color:var(--moss);
-    margin:0 0 2px;
-    font-weight:600;
-  }
-  .masthead h1{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:30px;
-    line-height:1.05;
-    margin:0;
-    color:var(--ink);
-  }
-  .masthead p{
-    margin:8px 0 0;
-    font-size:14px;
-    color:var(--ink-soft);
-    max-width:36ch;
-  }
-
-  /* Progress trail */
-  .trail{
-    display:flex;
-    gap:7px;
-    margin:18px 0 20px;
-    flex-wrap:wrap;
-  }
-  .trail-dot{
-    width:26px;height:26px;
-    border-radius:50%;
-    border:2px solid var(--line);
-    display:flex;align-items:center;justify-content:center;
-    font-size:12px;
-    color:var(--ink-soft);
-    background:transparent;
-    flex-shrink:0;
-    transition:all .25s ease;
-  }
-  .trail-dot.found{
-    background:var(--moss);
-    border-color:var(--moss);
-    color:var(--paper);
-  }
-  .trail-dot.current{
-    border-color:var(--gold);
-    color:var(--gold);
-    font-weight:700;
-  }
-
-  /* Card */
-  .card{
-    background:#FBF8EF;
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:26px 24px 24px;
-    position:relative;
-    box-shadow:0 1px 0 var(--line);
-  }
-  .plant-icon{
-    width:120px;height:120px;
-    margin:0 auto 10px;
-    display:block;
-  }
-  .plant-icon svg{width:100%;height:100%;}
-  .plant-name{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:26px;
-    text-align:center;
-    margin:0 0 4px;
-    color:var(--moss-dark);
-  }
-  .plant-clue{
-    text-align:center;
-    font-size:14.5px;
-    color:var(--ink-soft);
-    line-height:1.5;
-    margin:0 auto 6px;
-    max-width:32ch;
-  }
-  .hint-toggle{
-    display:block;
-    margin:6px auto 0;
-    background:none;
-    border:none;
-    color:var(--moss);
-    text-decoration:underline;
-    text-underline-offset:3px;
-    font-size:13px;
-    cursor:pointer;
-    padding:4px;
-  }
-  .hint-box{
-    font-size:13.5px;
-    color:var(--ink-soft);
-    background:var(--paper-deep);
-    border-radius:10px;
-    padding:10px 12px;
-    margin-top:8px;
-    display:none;
+    font-family:'Nunito',system-ui,sans-serif;
+    font-size:16px;
     line-height:1.45;
+    -webkit-tap-highlight-color:transparent;
+    min-height:100dvh;
   }
-  .hint-box.open{display:block;}
-  .warn-tag{
-    display:block;
-    text-align:center;
-    font-size:12.5px;
-    color:var(--clay);
-    margin-top:8px;
-    font-weight:600;
-  }
+  button{font-family:inherit;color:inherit;cursor:pointer;}
+  button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px;}
+  .latin{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;}
 
-  .actions{
-    margin-top:22px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  button.primary, label.primary{
-    background:var(--moss);
-    color:var(--paper);
-    border:none;
-    border-radius:10px;
-    padding:14px 18px;
-    font-family:'Work Sans', sans-serif;
-    font-size:15.5px;
-    font-weight:600;
-    cursor:pointer;
-    text-align:center;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    transition:background .15s ease;
-  }
-  button.primary:active, label.primary:active{background:var(--moss-dark);}
-  button.ghost{
-    background:none;
-    border:1.5px solid var(--line);
-    color:var(--ink-soft);
-    border-radius:10px;
-    padding:12px 18px;
-    font-family:'Work Sans', sans-serif;
-    font-size:14.5px;
-    cursor:pointer;
-  }
-  input[type=file]{display:none;}
+  #app{max-width:480px;margin:0 auto;min-height:100dvh;position:relative;}
+  .screen{display:none;padding:0 16px calc(var(--nav-h) + 36px + env(safe-area-inset-bottom));}
+  .screen.active{display:block;}
 
-  /* Loading state */
-  .loading-wrap{text-align:center;padding:10px 0 4px;}
-  .thumb{
-    width:100%;
-    max-width:280px;
-    border-radius:10px;
-    display:block;
-    margin:0 auto 16px;
-    border:1px solid var(--line);
+  /* Top bar */
+  .topbar{
+    position:sticky;top:0;z-index:5;
+    background:linear-gradient(var(--bg) 82%, rgba(241,245,238,0));
+    padding:calc(14px + env(safe-area-inset-top)) 0 12px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
   }
-  .spinner{
-    width:26px;height:26px;
-    border:3px solid var(--line);
-    border-top-color:var(--moss);
-    border-radius:50%;
-    margin:0 auto 10px;
-    animation:spin 0.8s linear infinite;
+  .topbar h1{margin:0;font-size:26px;font-weight:800;line-height:1.1;}
+  .topbar p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
+  .ring{position:relative;width:62px;height:62px;flex-shrink:0;}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ring .track{stroke:var(--line);}
+  .ring .bar{stroke:var(--leaf);transition:stroke-dashoffset .7s cubic-bezier(.2,.8,.2,1);}
+  .ring .num{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;line-height:1;
   }
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .loading-text{font-size:14px;color:var(--ink-soft);}
+  .ring .num small{font-size:10px;font-weight:700;color:var(--ink-soft);margin-top:2px;}
 
-  /* Result state */
-  .result-banner{
-    text-align:center;
-    padding:6px 4px 2px;
+  /* Filter chips */
+  .chips{
+    display:flex;gap:8px;overflow-x:auto;padding:2px 16px 12px;margin:0 -16px 6px;
+    scrollbar-width:none;
   }
-  .result-emblem{
-    width:54px;height:54px;
-    border-radius:50%;
-    margin:0 auto 14px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:26px;
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex-shrink:0;border:1.5px solid var(--line);background:var(--card);
+    border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;
+    min-height:40px;
   }
-  .result-emblem.yes{background:var(--moss);color:var(--paper);}
-  .result-emblem.no{background:#EADFC2;color:var(--clay);}
-  .result-title{
-    font-family:'Fraunces', serif;
-    font-size:22px;
-    font-weight:600;
-    margin:0 0 8px;
-  }
-  .result-feedback{
-    font-size:14.5px;
-    color:var(--ink-soft);
-    line-height:1.55;
-    max-width:34ch;
-    margin:0 auto 4px;
-  }
+  .chip[aria-pressed="true"]{background:var(--leaf-deep);border-color:var(--leaf-deep);color:#fff;}
 
-  /* Finish state */
-  .finish-wrap{text-align:center;}
-  .finish-score{
-    font-family:'Fraunces', serif;
-    font-size:52px;
-    font-weight:600;
-    color:var(--moss-dark);
-    margin:6px 0 0;
-    line-height:1;
+  /* Sections & grid */
+  .section{margin:6px 0 22px;}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+  .section-head h2{margin:0;font-size:18px;font-weight:800;}
+  .section-head span{font-size:14px;font-weight:700;color:var(--ink-soft);}
+  .section-bar{height:4px;border-radius:4px;background:var(--line);margin-bottom:12px;overflow:hidden;}
+  .section-bar i{display:block;height:100%;border-radius:4px;transition:width .6s ease;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .card{
+    position:relative;display:flex;flex-direction:column;padding:0;overflow:hidden;text-align:left;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    aspect-ratio:1/1.2;
   }
-  .finish-score span{font-size:24px;color:var(--ink-soft);font-family:'Work Sans',sans-serif;font-weight:500;}
-  .finish-label{font-size:13px;letter-spacing:.03em;color:var(--ink-soft);margin-bottom:2px;}
-  .recap{
-    text-align:left;
-    margin-top:20px;
-    border-top:1px solid var(--line);
-    padding-top:14px;
+  .card .pic{flex:1;display:grid;place-items:center;background:var(--leaf-tint);overflow:hidden;min-height:0;}
+  .card .pic img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card .pic .ph{font-size:34px;filter:grayscale(1);opacity:.35;}
+  .card .nm{padding:6px 7px 8px;font-size:12.5px;font-weight:700;line-height:1.2;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.9em;}
+  .card.missing .nm{color:var(--ink-soft);font-weight:600;}
+  .card .tick{
+    position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;
+    background:var(--leaf);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;
+    box-shadow:0 0 0 2px #fff;
   }
-  .recap-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:6px 0;
-    font-size:14px;
-  }
-  .recap-mark{
-    width:20px;height:20px;
-    border-radius:50%;
-    flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    font-size:11px;
-    font-weight:700;
-  }
-  .recap-mark.yes{background:var(--moss);color:var(--paper);}
-  .recap-mark.no{background:#EADFC2;color:var(--clay);}
+  .card.flash{animation:cardflash 1.4s ease;}
+  @keyframes cardflash{0%,100%{box-shadow:0 0 0 0 rgba(242,182,50,0)}30%{box-shadow:0 0 0 5px rgba(242,182,50,.9)}}
+  .empty{padding:30px 10px;text-align:center;color:var(--ink-soft);}
 
-  .footnote{
-    text-align:center;
-    font-size:11.5px;
-    color:var(--ink-soft);
-    opacity:.75;
-    margin-top:16px;
-    line-height:1.5;
+  /* Bottom nav */
+  .nav{
+    position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+    width:min(480px,100%);height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+    padding-bottom:env(safe-area-inset-bottom);
+    background:var(--card);border-top:1px solid var(--line);z-index:10;
+    display:grid;grid-template-columns:1fr 92px 1fr;align-items:center;
   }
-  .error-text{
-    color:var(--clay);
-    font-size:13.5px;
-    text-align:center;
-    margin-top:10px;
+  .nav button.tab{
+    background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;
+    font-size:13px;font-weight:700;color:var(--ink-soft);height:100%;
+  }
+  .nav button.tab[aria-current="page"]{color:var(--leaf-deep);}
+  .nav button.tab svg{width:26px;height:26px;}
+  .fab{
+    justify-self:center;width:72px;height:72px;border-radius:50%;
+    background:var(--leaf);border:6px solid var(--bg);color:#fff;
+    display:grid;place-items:center;margin-top:-34px;
+    box-shadow:0 6px 16px rgba(47,107,42,.35);
+  }
+  .fab svg{width:32px;height:32px;}
+  .fab:active{transform:scale(.95);}
+
+  /* Camera overlay */
+  .overlay{position:fixed;inset:0;z-index:50;display:none;}
+  .overlay.open{display:block;}
+  #camera{background:var(--cam);color:#fff;}
+  #camera video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .shade-top,.shade-bot{position:absolute;left:0;right:0;pointer-events:none;}
+  .shade-top{top:0;height:140px;background:linear-gradient(rgba(0,0,0,.55),transparent);}
+  .shade-bot{bottom:0;height:240px;background:linear-gradient(transparent,rgba(0,0,0,.65));}
+  .cam-close{
+    position:absolute;top:calc(14px + env(safe-area-inset-top));left:14px;
+    width:46px;height:46px;border-radius:50%;border:none;background:rgba(0,0,0,.45);color:#fff;
+    display:grid;place-items:center;
+  }
+  .cam-close svg{width:22px;height:22px;}
+  .reticle{
+    position:absolute;left:50%;top:44%;width:min(72vw,320px);aspect-ratio:1;transform:translate(-50%,-50%);
+    pointer-events:none;
+  }
+  .reticle i{position:absolute;width:34px;height:34px;border:4px solid rgba(255,255,255,.9);}
+  .reticle i:nth-child(1){top:0;left:0;border-right:none;border-bottom:none;border-top-left-radius:14px;}
+  .reticle i:nth-child(2){top:0;right:0;border-left:none;border-bottom:none;border-top-right-radius:14px;}
+  .reticle i:nth-child(3){bottom:0;left:0;border-right:none;border-top:none;border-bottom-left-radius:14px;}
+  .reticle i:nth-child(4){bottom:0;right:0;border-left:none;border-top:none;border-bottom-right-radius:14px;}
+  .cam-tip{
+    position:absolute;left:0;right:0;bottom:calc(150px + env(safe-area-inset-bottom));
+    text-align:center;font-weight:700;font-size:15px;padding:0 24px;text-shadow:0 1px 6px rgba(0,0,0,.7);
+  }
+  .cam-bar{
+    position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom));
+    display:grid;grid-template-columns:1fr 86px 1fr;align-items:center;padding:0 22px;
+  }
+  .shutter{
+    width:80px;height:80px;border-radius:50%;background:#fff;border:6px solid rgba(255,255,255,.45);
+    background-clip:padding-box;justify-self:center;
+  }
+  .shutter:active{transform:scale(.93);}
+  .shutter:disabled{opacity:.5;}
+  .gallery{
+    width:52px;height:52px;border-radius:14px;border:2px solid rgba(255,255,255,.8);background:rgba(0,0,0,.35);
+    color:#fff;display:grid;place-items:center;justify-self:start;
+  }
+  .gallery svg{width:26px;height:26px;}
+  .cam-fallback{
+    position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;padding:30px;text-align:center;background:var(--cam);
+  }
+  .cam-fallback.show{display:flex;}
+  .cam-fallback p{margin:0;max-width:30ch;color:#C9D6CC;}
+
+  /* Result overlay */
+  #result{background:var(--bg);overflow-y:auto;}
+  .res-photo{
+    position:relative;width:100%;height:min(46vh,380px);background:#000;
+    border-bottom-left-radius:30px;border-bottom-right-radius:30px;overflow:hidden;
+  }
+  .res-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .scanline{
+    position:absolute;left:0;right:0;height:80px;top:-80px;
+    background:linear-gradient(transparent,rgba(120,220,80,.55),transparent);
+    animation:scan 1.8s ease-in-out infinite;
+  }
+  @keyframes scan{0%{top:-80px}100%{top:100%}}
+  .res-body{padding:20px 20px calc(30px + env(safe-area-inset-bottom));max-width:480px;margin:0 auto;}
+  .tag{
+    display:inline-block;padding:5px 12px;border-radius:999px;font-weight:800;font-size:14px;
+    background:var(--leaf-tint);color:var(--leaf-deep);margin-bottom:10px;
+  }
+  .tag.new{background:var(--sun);color:#3A2A00;}
+  .tag.warn{background:#F7E1D8;color:#8A3515;}
+  .res-body h2{margin:0;font-size:30px;font-weight:800;line-height:1.1;}
+  .res-body .latin{font-size:18px;color:var(--ink-soft);margin:4px 0 0;}
+  .res-body p.fact{margin:14px 0 0;font-size:16.5px;}
+  .res-body p.sub{margin:14px 0 0;color:var(--ink-soft);}
+  .scan-text{text-align:center;padding:26px 0;font-weight:800;font-size:20px;}
+  .scan-text span{display:block;font-weight:600;font-size:15px;color:var(--ink-soft);margin-top:4px;}
+  .dots i{display:inline-block;animation:blink 1.2s infinite;font-style:normal;}
+  .dots i:nth-child(2){animation-delay:.2s;}
+  .dots i:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+  .progress-line{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;}
+  .progress-line b{font-weight:800;}
+  .progress-line .bar{height:6px;border-radius:6px;background:var(--line);margin-top:8px;overflow:hidden;}
+  .progress-line .bar i{display:block;height:100%;background:var(--leaf);border-radius:6px;}
+  .rankup{
+    margin-top:12px;background:var(--leaf-deep);color:#fff;border-radius:14px;padding:12px 14px;font-weight:700;
+  }
+  .btn-row{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+  .btn{
+    border:none;border-radius:14px;padding:15px 18px;font-size:17px;font-weight:800;min-height:52px;
+    background:var(--leaf);color:#fff;
+  }
+  .btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--line);}
+  .btn.danger{background:var(--clay);}
+  .pop{animation:pop .6s cubic-bezier(.2,1.4,.3,1) both;}
+  @keyframes pop{0%{transform:scale(1.18) rotate(-3deg);opacity:0}100%{transform:none;opacity:1}}
+
+  /* Detail sheet */
+  #detail{background:rgba(10,20,12,.5);}
+  .sheet{
+    position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(480px,100%);
+    background:var(--bg);border-radius:26px 26px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom));
+    max-height:90vh;overflow-y:auto;animation:rise .25s ease;
+  }
+  @keyframes rise{from{transform:translate(-50%,40px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+  .sheet .grab{width:44px;height:5px;border-radius:5px;background:var(--line);margin:-8px auto 14px;}
+  .sheet .big{
+    width:100%;aspect-ratio:1.4;border-radius:18px;overflow:hidden;background:var(--leaf-tint);
+    display:grid;place-items:center;margin-bottom:14px;
+  }
+  .sheet .big img{width:100%;height:100%;object-fit:cover;}
+  .sheet .big .ph{font-size:64px;filter:grayscale(1);opacity:.35;}
+  .sheet h2{margin:0;font-size:26px;font-weight:800;}
+  .sheet .meta{color:var(--ink-soft);font-weight:600;font-size:14px;margin-top:6px;}
+
+  /* Stats screen */
+  .rank-card{
+    background:var(--leaf-deep);color:#fff;border-radius:20px;padding:20px;margin-bottom:18px;
+  }
+  .rank-card small{font-weight:700;opacity:.8;}
+  .rank-card h2{margin:2px 0 10px;font-size:30px;font-weight:800;line-height:1.1;}
+  .rank-card .bar{height:8px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden;}
+  .rank-card .bar i{display:block;height:100%;background:var(--sun);border-radius:8px;}
+  .rank-card p{margin:10px 0 0;font-size:14.5px;opacity:.92;}
+  .stat-h{margin:22px 0 10px;font-size:18px;font-weight:800;}
+  .cat-row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin-bottom:12px;font-weight:700;}
+  .cat-row span:last-child{color:var(--ink-soft);}
+  .cat-row .section-bar{grid-column:1/-1;margin:0;}
+  .reset{margin-top:34px;text-align:center;}
+  .reset button{background:none;border:none;color:var(--ink-soft);text-decoration:underline;font-size:14px;padding:10px;}
+  .reset .confirm{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;}
+  .toast{
+    position:fixed;left:50%;bottom:calc(var(--nav-h) + 20px);transform:translateX(-50%);z-index:80;
+    background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;max-width:88vw;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
   }
 </style>
 </head>
 <body>
-<div class="journal">
+<div id="app">
 
-  <div class="masthead">
-    <p class="kicker">Lauko žurnalas</p>
-    <h1>Augalų medžioklė</h1>
-    <p>Susirask kiekvieną augalą lauke, nufotografuok jį, o Claude patikrins, ar radai tą, kurio reikėjo.</p>
-  </div>
+  <!-- Albumas -->
+  <main class="screen active" id="screen-album" aria-label="Albumas">
+    <div class="topbar">
+      <div>
+        <h1>Augalų šimtukas</h1>
+        <p>Rask, nufotografuok ir užpildyk albumą.</p>
+      </div>
+      <div class="ring" id="ring" aria-label="Rasta augalų"></div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filtras"></div>
+    <div id="album"></div>
+  </main>
 
-  <div class="trail" id="trail"></div>
+  <!-- Pasiekimai -->
+  <main class="screen" id="screen-stats" aria-label="Pasiekimai">
+    <div class="topbar"><div><h1>Pasiekimai</h1><p>Tavo kelias iki šimto augalų.</p></div></div>
+    <div id="stats"></div>
+  </main>
 
-  <div class="card" id="card"></div>
-
-  <p class="footnote">Nuotrauka nusiunčiama Claude dirbtiniam intelektui atpažinimui — ji niekur nesaugoma. Geriausiai veikia dienos šviesoje, lauke.</p>
+  <nav class="nav" aria-label="Pagrindinis meniu">
+    <button class="tab" id="tab-album" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Albumas
+    </button>
+    <button class="fab" id="open-camera" aria-label="Fotografuoti augalą">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.6"/></svg>
+    </button>
+    <button class="tab" id="tab-stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+      Pasiekimai
+    </button>
+  </nav>
 </div>
 
-<script>
-// Pakeisk į savo Cloudflare Worker adresą, gautą po diegimo (žr. worker.js failą).
-const API_PROXY_URL = "https://augalu-proxy.jasalinis-jokubas.workers.dev";
+<!-- Kamera -->
+<div class="overlay" id="camera" role="dialog" aria-label="Kamera">
+  <video id="video" playsinline autoplay muted></video>
+  <div class="shade-top"></div><div class="shade-bot"></div>
+  <button class="cam-close" id="cam-close" aria-label="Uždaryti kamerą">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+  <div class="reticle"><i></i><i></i><i></i><i></i></div>
+  <div class="cam-tip" id="cam-tip">Nutaikyk į augalą: lapus, žiedus ar žievę</div>
+  <div class="cam-bar">
+    <button class="gallery" id="pick-btn" aria-label="Pasirinkti nuotrauką iš galerijos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg>
+    </button>
+    <button class="shutter" id="shutter" aria-label="Nufotografuoti"></button>
+    <span></span>
+  </div>
+  <div class="cam-fallback" id="cam-fallback">
+    <p id="cam-fallback-msg">Kamera neatsidarė. Gali nufotografuoti telefono kamera.</p>
+    <button class="btn" id="snap-btn">Fotografuoti</button>
+    <button class="btn ghost" id="pick-btn2">Pasirinkti iš galerijos</button>
+  </div>
+</div>
+<input type="file" id="snap-input" accept="image/*" capture="environment" hidden>
+<input type="file" id="pick-input" accept="image/*" hidden>
 
-const PLANTS = [
-  {
-    id:'azuolas', name:'Ąžuolas', clue:'Medis banguotais, apvaliais lapų kraštais ir gilėmis rudenį.',
-    hint:'Ieškok parke ar miško pakraštyje — ąžuolai dažnai auga pavieniui, dideli ir šakoti.',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4"><path d="M50 12c-6 8-14 10-14 20 0 6 5 8 3 14-3 8-12 8-12 18 0 8 8 12 16 9-2 6 3 11 9 9v-8m-2-62c6 8 14 10 14 20 0 6-5 8-3 14 3 8 12 8 12 18 0 8-8 12-16 9 2 6-3 11-9 9v-8m0-62v50" stroke-linejoin="round" stroke-linecap="round"/></svg>`
-  },
-  {
-    id:'klevas', name:'Klevas', clue:'Medis su žvaigždės formos, smailiais lapais.',
-    hint:'Dažnas gatvėse, kiemuose ir parkuose — vasarą lapai žali, rudenį paraudonuoja ar pagelsta.',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M50 15 L58 35 L78 28 L66 45 L84 55 L62 56 L68 78 L50 63 L32 78 L38 56 L16 55 L34 45 L22 28 L42 35 Z"/><path d="M50 63v22"/></svg>`
-  },
-  {
-    id:'berzas', name:'Beržas', clue:'Medis baltu, lygiu kamienu su juodais brūkšneliais ir smulkiais dantytais lapeliais.',
-    hint:'Baltą žievę pastebėsi iš tolo — beržai dažnai auga miško pakraščiuose ar pievų prieigose.',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M50 78V28"/><path d="M50 30c10-4 16-12 14-20-8 2-16 8-14 20z"/><path d="M50 30c-10-4-16-12-14-20 8 2 16 8 14 20z"/><path d="M42 20h4M44 26h4M40 14h3"/></svg>`
-  },
-  {
-    id:'kastonas', name:'Kaštonas', clue:'Medis su dideliais, delno formos lapais iš 5–7 lapelių.',
-    hint:'Dažnas prie mokyklų ir alėjose — pavasarį žydi baltais ar rausvais žvakutės formos žiedynais.',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><g transform="translate(50,60)"><path d="M0 0 L0 -42"/><path d="M0 0 L-24 -30"/><path d="M0 0 L-14 -38"/><path d="M0 0 L14 -38"/><path d="M0 0 L24 -30"/></g></svg>`
-  },
-  {
-    id:'kiaulpiene', name:'Kiaulpienė', clue:'Ryškiai geltona gėlė su daugybe siaurų žiedlapių, vėliau virsta baltu pūkuotu kamuoliuku.',
-    hint:'Auga beveik bet kur pievoje, pakelėje ar kieme — vieną iš labiausiai paplitusių gėlių rasti nesunku.',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><circle cx="50" cy="38" r="6" fill="var(--gold)" stroke="none"/>${Array.from({length:14}).map((_,i)=>{const a=i*(360/14)*Math.PI/180;const x2=50+16*Math.cos(a),y2=38+16*Math.sin(a);const x1=50+7*Math.cos(a),y1=38+7*Math.sin(a);return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;}).join('')}<path d="M50 54v24" stroke="var(--moss-dark)"/><path d="M50 66c-8-2-12 2-14 8M50 72c8-2 12 2 14 8" stroke="var(--moss-dark)"/></svg>`
-  },
-  {
-    id:'dobilas', name:'Dobilas', clue:'Žemas augalas su trimis apvaliais lapeliais ant vieno stiebelio.',
-    hint:'Pasidairyk pievoje ar žolėje — jei pasiseks, gali rasti ir retą keturlapį!',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round"><path d="M50 55V80"/><circle cx="50" cy="40" r="13"/><circle cx="36" cy="58" r="13"/><circle cx="64" cy="58" r="13"/></svg>`
-  },
-  {
-    id:'ramune', name:'Ramunė', clue:'Balta gėlė su geltona apvalia šerdimi viduryje.',
-    hint:'Ieškok saulėtoje pievoje ar pakelėje — žiedai dažnai auga grupėmis.',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${Array.from({length:10}).map((_,i)=>{const a=i*36*Math.PI/180;const x=50+15*Math.cos(a),y=38+15*Math.sin(a);return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4" ry="9" transform="rotate(${i*36} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;}).join('')}<circle cx="50" cy="38" r="7" fill="var(--gold)" stroke="none"/><path d="M50 54v26"/></svg>`
-  },
-  {
-    id:'dilgele', name:'Dilgėlė', clue:'Žalias augalas priešpriešiniais, dantytais lapais, dengtas smulkiais plaukeliais.',
-    hint:'Dažnai auga pašiūrių, tvorų ar griovių pakraščiuose tankiais sąžalynais. Lieskis atsargiai!',
-    warn:'⚠ Nelieskite plikomis rankomis — dilgina!',
-    icon:`<svg viewBox="0 0 100 100" fill="none" stroke="var(--moss-dark)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M50 85V20"/><path d="M50 30l-16-8 3 10-9 2 12 6z"/><path d="M50 30l16-8-3 10 9 2-12 6z"/><path d="M50 48l-15-7 3 9-8 2 11 5z"/><path d="M50 48l15-7-3 9 8 2-11 5z"/></svg>`
-  }
+<!-- Rezultatas -->
+<div class="overlay" id="result" role="dialog" aria-label="Atpažinimo rezultatas"></div>
+
+<!-- Augalo kortelė -->
+<div class="overlay" id="detail" role="dialog" aria-label="Augalo informacija"></div>
+
+<script>
+// ============================================================
+// Nustatymai
+// ============================================================
+const API_PROXY_URL = "https://augalu-proxy.jasalinis-jokubas.workers.dev";
+const MODEL = "claude-haiku-5-5";
+const STORAGE_KEY = "augalu-simtukas-v1";
+
+const CATS = {
+  medis:   {label:'Medžiai',                    emoji:'🌳', color:'#2F6B2A'},
+  krumas:  {label:'Krūmai',                     emoji:'🌿', color:'#6B8E23'},
+  uoga:    {label:'Uogos ir krūmokšniai',       emoji:'🫐', color:'#8A3F7A'},
+  gele:    {label:'Pievų ir miško augalai',     emoji:'🌼', color:'#C99A12'},
+  zole:    {label:'Žolės, paparčiai, samanos',  emoji:'🌾', color:'#2E8B84'},
+  darzove: {label:'Daržovės ir javai',          emoji:'🥕', color:'#D9722B'},
+  sodas:   {label:'Sodo gėlės',                 emoji:'🌷', color:'#C2477A'},
+  kambarys:{label:'Kambariniai augalai',        emoji:'🪴', color:'#B5603C'}
+};
+
+// [pavadinimas, lotyniškas pavadinimas, kategorija, kaip atpažinti]
+const RAW = [
+  // Medžiai (20)
+  ['Ąžuolas','Quercus robur','medis','Banguoti lapai, rudenį gilės.'],
+  ['Beržas','Betula pendula','medis','Baltas kamienas su juodais brūkšneliais.'],
+  ['Klevas','Acer platanoides','medis','Žvaigždės formos lapai, sparnuoti sėklapiai.'],
+  ['Liepa','Tilia cordata','medis','Širdelės formos lapai.'],
+  ['Pušis','Pinus sylvestris','medis','Ilgi spygliai poromis, rausva žievė viršuje.'],
+  ['Eglė','Picea abies','medis','Trumpi spygliai, kabantys kankorėžiai.'],
+  ['Juodalksnis','Alnus glutinosa','medis','Apvalūs lapai, drėgnos vietos prie vandens.'],
+  ['Uosis','Fraxinus excelsior','medis','Plunksniški lapai, juodi pumpurai.'],
+  ['Drebulė','Populus tremula','medis','Lapai dreba nuo menkiausio vėjo.'],
+  ['Baltasis gluosnis','Salix alba','medis','Siauri sidabriški lapai, auga prie vandens.'],
+  ['Kaštonas','Aesculus hippocastanum','medis','Delno formos lapai, blizgūs rudi kaštonai.'],
+  ['Obelis','Malus domestica','medis','Sodo medis, rudenį obuoliai.'],
+  ['Kriaušė','Pyrus communis','medis','Sodo medis, blizgūs lapai, kriaušės.'],
+  ['Vyšnia','Prunus cerasus','medis','Sodo medis, raudonos vyšnios.'],
+  ['Ieva','Prunus padus','medis','Pavasarį kvepiančios žiedų kekės, juodos uogos.'],
+  ['Šermukšnis','Sorbus aucuparia','medis','Raudonos uogų kekės, plunksniški lapai.'],
+  ['Guoba','Ulmus glabra','medis','Nesimetriški lapų pagrindai, plokšti sėklapiai.'],
+  ['Maumedis','Larix decidua','medis','Spygliuotis, kuris rudenį numeta spyglius.'],
+  ['Skroblas','Carpinus betulus','medis','Dantyti lapai su ryškiomis gyslomis.'],
+  ['Tuja','Thuja occidentalis','medis','Žvynuotos žalios šakelės, dažna gyvatvorėse.'],
+  // Krūmai (15)
+  ['Lazda','Corylus avellana','krumas','Riešutai, dantyti apvalūs lapai.'],
+  ['Putinas','Viburnum opulus','krumas','Raudonos uogos, trijų skilčių lapai.'],
+  ['Šeivamedis','Sambucus nigra','krumas','Skėtiniai žiedynai, juodos uogos.'],
+  ['Šunrožė','Rosa canina','krumas','Dygliai, raudoni vaisiai.'],
+  ['Juodieji serbentai','Ribes nigrum','krumas','Kvepiantys lapai, juodos uogos.'],
+  ['Agrastas','Ribes uva-crispa','krumas','Dygliuoti šakos, dryžuotos uogos.'],
+  ['Avietė','Rubus idaeus','krumas','Raudonos uogos, baltai apačioje lapai.'],
+  ['Gervuogė','Rubus fruticosus','krumas','Dygliuotos vijoklinės šakos, juodos uogos.'],
+  ['Kadagys','Juniperus communis','krumas','Dygūs spygliai, mėlynos uogos.'],
+  ['Alyva','Syringa vulgaris','krumas','Širdiški lapai, pavasarį violetinės žiedų kekės.'],
+  ['Blindė','Salix caprea','krumas','Pavasarį pūkuoti „kačiukai“.'],
+  ['Gudobelė','Crataegus monogyna','krumas','Dygliai, raudonos uogos.'],
+  ['Šaltalankis','Hippophae rhamnoides','krumas','Siauri sidabriški lapai, oranžinės uogos.'],
+  ['Šaltekšnis','Frangula alnus','krumas','Lygūs lapai, uogos iš raudonų tampa juodos.'],
+  ['Jazminas','Philadelphus coronarius','krumas','Balti kvapūs žiedai sode.'],
+  // Uogos ir krūmokšniai (6)
+  ['Mėlynė','Vaccinium myrtillus','uoga','Miško krūmokšnis, mėlynos uogos.'],
+  ['Brusnė','Vaccinium vitis-idaea','uoga','Visžalis, raudonos uogos.'],
+  ['Spanguolė','Vaccinium oxycoccos','uoga','Pelkėse, ploni ropojantys stiebeliai.'],
+  ['Žemuogė','Fragaria vesca','uoga','Trilapiai lapai, mažos raudonos uogos.'],
+  ['Viržis','Calluna vulgaris','uoga','Smėlėti miškai, rudenį rausvi žiedai.'],
+  ['Girtuoklė','Vaccinium uliginosum','uoga','Pelkėse, melsvos uogos.'],
+  // Pievų ir miško augalai (25)
+  ['Kiaulpienė','Taraxacum officinale','gele','Geltonas žiedas, vėliau pūkų kamuoliukas.'],
+  ['Vaistinė ramunė','Matricaria chamomilla','gele','Balti žiedlapiai, išgaubta geltona šerdis.'],
+  ['Margainis','Leucanthemum vulgare','gele','Didelis baltas žiedas su geltona šerdimi.'],
+  ['Raudonasis dobilas','Trifolium pratense','gele','Rausvas rutuliukas, trilapiai lapai.'],
+  ['Baltasis dobilas','Trifolium repens','gele','Žemas, baltas rutuliukas, trilapiai lapai.'],
+  ['Rugiagėlė','Centaurea cyanus','gele','Ryškiai mėlynas žiedas javų laukuose.'],
+  ['Aguona','Papaver rhoeas','gele','Raudoni plonyčiai žiedlapiai.'],
+  ['Žibuoklė','Viola odorata','gele','Širdiški lapai, violetiniai kvapūs žiedai.'],
+  ['Našlaitė','Viola tricolor','gele','Trispalvis žiedas: violetinis, geltonas, baltas.'],
+  ['Katilėlis','Campanula rotundifolia','gele','Mėlyni varpeliai ant plono stiebo.'],
+  ['Pakalnutė','Convallaria majalis','gele','Balti varpeliai, du dideli lapai.'],
+  ['Snieguolė','Galanthus nivalis','gele','Pirmoji pavasario gėlė, balti nulinkę žiedai.'],
+  ['Jonažolė','Hypericum perforatum','gele','Geltoni žiedai, lapai su „skylutėmis“.'],
+  ['Valerijonas','Valeriana officinalis','gele','Rausvi skėtiniai žiedynai, stiprus kvapas.'],
+  ['Čiobrelis','Thymus serpyllum','gele','Ropojantis, mažyčiai rausvi žiedai, kvapnus.'],
+  ['Pipirmėtė','Mentha × piperita','gele','Kvepia mentolu, dantyti lapai.'],
+  ['Rūta','Ruta graveolens','gele','Melsvi dalyti lapai, geltoni žiedeliai.'],
+  ['Varnalėša','Arctium lappa','gele','Dideli lapai, prilimpantys rutuliukai.'],
+  ['Pelynas','Artemisia absinthium','gele','Sidabriški dalyti lapai, kartus kvapas.'],
+  ['Dilgėlė','Urtica dioica','gele','Dantyti lapai, dilgina rankas.'],
+  ['Rūgštynė','Rumex acetosa','gele','Strėlės formos lapai, rūgštaus skonio.'],
+  ['Gyslotis','Plantago major','gele','Apvalūs lapai su ryškiomis gyslomis.'],
+  ['Usnis','Cirsium vulgare','gele','Dygūs lapai, purpurinis žiedas.'],
+  ['Asiūklis','Equisetum arvense','gele','Atrodo kaip mažytė eglutė, nėra žiedų.'],
+  ['Baltoji vandens lelija','Nymphaea alba','gele','Plūduriuoja ežere, balti žiedai.'],
+  // Žolės, paparčiai, samanos (7)
+  ['Motiejukas','Phleum pratense','zole','Pievų žolė su cilindriniu varpos žiedynu.'],
+  ['Nendrė','Phragmites australis','zole','Aukšta žolė prie vandens, pūkuotas žiedynas.'],
+  ['Švendras','Typha latifolia','zole','Rudas cilindras ant stiebo, prie vandens.'],
+  ['Viksva','Carex sp.','zole','Trikampis stiebas, drėgnos vietos.'],
+  ['Papartis','Pteridium aquilinum','zole','Dideli plunksniški lapai, miško pakraštyje.'],
+  ['Samana','Bryophyta','zole','Minkšta žalia danga ant žemės ar medžių.'],
+  ['Smilga','Agrostis capillaris','zole','Smulkus, plonas pievų žolės žiedynas.'],
+  // Daržovės ir javai (14)
+  ['Rugys','Secale cereale','darzove','Aukšti javai su ilgomis ūsuotomis varpomis.'],
+  ['Kviečiai','Triticum aestivum','darzove','Javai su storomis auksinėmis varpomis.'],
+  ['Avižos','Avena sativa','darzove','Javai su kabančiais smulkiais grūdeliais.'],
+  ['Miežiai','Hordeum vulgare','darzove','Varpa su labai ilgais ūseliais.'],
+  ['Kukurūzas','Zea mays','darzove','Aukštas stiebas, burbuolė.'],
+  ['Bulvė','Solanum tuberosum','darzove','Gumbai žemėje, plunksniški lapai.'],
+  ['Morka','Daucus carota','darzove','Oranžinė šaknis, plunksniški lapai.'],
+  ['Pomidoras','Solanum lycopersicum','darzove','Raudoni vaisiai, stiprus lapų kvapas.'],
+  ['Agurkas','Cucumis sativus','darzove','Vijoklis su žaliais vaisiais.'],
+  ['Moliūgas','Cucurbita pepo','darzove','Dideli lapai, oranžinis vaisius.'],
+  ['Kopūstas','Brassica oleracea','darzove','Didelė galva iš sluoksniuotų lapų.'],
+  ['Krapas','Anethum graveolens','darzove','Smulkūs siūliški lapai, geltoni skėčiai.'],
+  ['Svogūnas','Allium cepa','darzove','Tuščiaviduriai laiškai, apvali svogūnėlis.'],
+  ['Saulėgrąža','Helianthus annuus','darzove','Didelis geltonas žiedas seka saulę.'],
+  // Sodo gėlės (8)
+  ['Tulpė','Tulipa','sodas','Taurės formos žiedas, pavasarį.'],
+  ['Narcizas','Narcissus','sodas','Geltona „trimitėlė“ viduryje.'],
+  ['Bijūnas','Paeonia','sodas','Didžiuliai purūs žiedai.'],
+  ['Gvazdikas','Dianthus','sodas','Dantyti žiedlapių kraštai, kvepia.'],
+  ['Medetka','Calendula officinalis','sodas','Oranžinis ar geltonas žiedas.'],
+  ['Aksomutė','Tagetes','sodas','Aksominiai oranžiniai ar rudi žiedai.'],
+  ['Rožė','Rosa','sodas','Sluoksniuoti žiedlapiai, spygliai ant stiebo.'],
+  ['Astra','Callistephus chinensis','sodas','Rudens žiedas, daug siaurų žiedlapių.'],
+  // Kambariniai (5)
+  ['Pelargonija','Pelargonium','kambarys','Apvalūs plaukuoti lapai, žiedų kekės.'],
+  ['Aloė','Aloe vera','kambarys','Mėsingi dygūs lapai rozete.'],
+  ['Orchidėja','Phalaenopsis','kambarys','Plokšti žiedai ant išlenkto stiebo.'],
+  ['Kaktusas','Cactaceae','kambarys','Mėsingas dygliuotas stiebas.'],
+  ['Fikusas','Ficus benjamina','kambarys','Blizgūs smailūs lapai, plona žievė.']
 ];
 
-function shuffle(arr){
-  const a=[...arr];
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
+const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const PLANTS = RAW.map(([name,latin,cat,hint]) => ({id:slug(name), name, latin, cat, hint}));
+const BY_ID = Object.fromEntries(PLANTS.map(p => [p.id, p]));
+
+const RANKS = [
+  [0,'Sėkla'],[5,'Daigas'],[15,'Ūglys'],[30,'Jaunas medelis'],
+  [50,'Žaliasis žvalgas'],[75,'Botanikos žinovas'],[100,'Šimtuko meistras']
+];
+
+const SYSTEM_PROMPT =
+`Esi gamtos žinovas, padedantis 5–8 klasių mokiniams atpažinti augalus nuotraukose žaidime, panašiame į „Seek“.
+Gauni vieną nuotrauką. Atsakyk TIK vienu JSON objektu, be jokio kito teksto ir be kodo blokų, tokiu formatu:
+{"is_plant": true/false, "from_screen_or_print": true/false, "id": "sąrašo id arba null", "name_lt": "pavadinimas lietuviškai", "latin": "lotyniškas pavadinimas", "confidence": "high"/"medium"/"low", "fact": "vienas įdomus faktas 1–2 sakiniais paprasta lietuvių kalba", "advice": "jei confidence low: ką nufotografuoti iš arčiau, 1 sakinys, kitaip tuščia eilutė"}
+
+Taisyklės:
+- is_plant=false, jei nuotraukoje nėra jokio augalo (tada kiti laukai gali būti tušti).
+- from_screen_or_print=true, jei nuotrauka darytą iš ekrano, monitoriaus, telefono, knygos ar popieriaus (ne tikras augalas).
+- Jei augalas yra šiame sąraše, id nurodyk TIKTAI iš šio sąrašo ir tik jei esi bent vidutiniškai tikras. Jei augalo sąraše nėra, id=null, bet name_lt ir latin parašyk.
+- Medžiai ir krūmai: turi būti matomi lapai, spygliai, žievė, žiedai ar vaisiai ant paties augalo.
+- Daržovės ir javai: tinka ir augalas, ir nuimtas derlius (pvz. morka, bulvė, moliūgas).
+- Nupjautos gėlės vazoje ir kambariniai augalai taip pat yra tikri augalai.
+- Nesigudrauk: jei neaišku, confidence=low.
+
+SĄRAŠAS (id: pavadinimas, lotyniškai):
+` + PLANTS.map(p => `${p.id}: ${p.name} (${p.latin})`).join('\n');
+
+// ============================================================
+// Būsena ir saugykla
+// ============================================================
+let state = {found:{}, others:[]};
+let storageOk = true;
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const s = JSON.parse(raw); state = {found:s.found||{}, others:s.others||[]}; }
+  }catch(e){ storageOk = false; }
+}
+function saveState(){
+  if(!storageOk) return false;
+  for(let attempt=0; attempt<4; attempt++){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }
+    catch(e){
+      // Trūksta vietos: pirmiausia numetame senų „kitų radinių“ nuotraukas.
+      const withThumb = state.others.find(o => o.thumb);
+      if(withThumb){ delete withThumb.thumb; continue; }
+      if(state.others.length){ state.others.shift(); continue; }
+      storageOk = false; return false;
+    }
   }
-  return a;
+  return false;
 }
+const foundCount = () => Object.keys(state.found).length;
+const rankFor = n => { let r = RANKS[0]; for(const x of RANKS){ if(n >= x[0]) r = x; } return r; };
+const nextRank = n => RANKS.find(x => x[0] > n) || null;
 
-let order = shuffle(PLANTS);
-let idx = 0;
-let results = []; // {plant, match}
-
-const cardEl = document.getElementById('card');
-const trailEl = document.getElementById('trail');
-
-function renderTrail(){
-  trailEl.innerHTML = order.map((p,i)=>{
-    const found = results[i]!==undefined;
-    let cls='trail-dot';
-    if(found && results[i].match) cls+=' found';
-    if(i===idx && !found) cls+=' current';
-    return `<div class="${cls}">${found ? (results[i].match?'✓':'·') : (i+1)}</div>`;
-  }).join('');
+// ============================================================
+// Pagalbinės funkcijos
+// ============================================================
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
 }
-
-function renderHunt(){
-  const p = order[idx];
-  renderTrail();
-  cardEl.innerHTML = `
-    <div class="plant-icon">${p.icon}</div>
-    <h2 class="plant-name">${p.name}</h2>
-    <p class="plant-clue">${p.clue}</p>
-    <button class="hint-toggle" id="hintBtn">Kur ieškoti?</button>
-    <div class="hint-box" id="hintBox">${p.hint}</div>
-    ${p.warn?`<span class="warn-tag">${p.warn}</span>`:''}
-    <div class="actions">
-      <label class="primary" for="fileInput">📷 Fotografuoti augalą</label>
-      <input type="file" id="fileInput" accept="image/*" capture="environment">
-      <button class="ghost" id="skipBtn">Praleisti šį augalą</button>
-    </div>
-  `;
-  document.getElementById('hintBtn').onclick = ()=>{
-    document.getElementById('hintBox').classList.toggle('open');
-  };
-  document.getElementById('fileInput').onchange = onPhotoChosen;
-  document.getElementById('skipBtn').onclick = ()=>{
-    results[idx] = {plant:p, match:false, skipped:true};
-    idx++;
-    idx < order.length ? renderHunt() : renderFinish();
-  };
+function drawScaled(src, w, h, max, q){
+  const s = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas');
+  c.width = Math.round(w * s); c.height = Math.round(h * s);
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', q);
 }
+function loadImg(url){
+  return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+}
+async function fileToJpeg(file){
+  let bmp;
+  try{ bmp = await createImageBitmap(file, {imageOrientation:'from-image'}); }
+  catch(e){
+    const url = URL.createObjectURL(file);
+    try{ bmp = await loadImg(url); } finally { URL.revokeObjectURL(url); }
+  }
+  return drawScaled(bmp, bmp.width || bmp.naturalWidth, bmp.height || bmp.naturalHeight, 768, 0.8);
+}
+async function makeThumb(dataUrl){
+  const img = await loadImg(dataUrl);
+  const S = 240, m = Math.min(img.width, img.height);
+  const c = document.createElement('canvas'); c.width = S; c.height = S;
+  c.getContext('2d').drawImage(img, (img.width-m)/2, (img.height-m)/2, m, m, 0, 0, S, S);
+  return c.toDataURL('image/jpeg', 0.72);
+}
+const today = () => new Date().toLocaleDateString('lt-LT');
 
-function resizeImage(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = e=>{
-      const img = new Image();
-      img.onload = ()=>{
-        const maxW = 760;
-        const scale = Math.min(1, maxW/img.width);
-        const w = Math.round(img.width*scale);
-        const h = Math.round(img.height*scale);
-        const canvas = document.createElement('canvas');
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(canvas.toDataURL('image/jpeg', 0.75));
-      };
-      img.onerror = reject;
-      img.src = e.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+// ============================================================
+// Albumas
+// ============================================================
+let filter = 'all';
+function ringSVG(n){
+  const R = 26, C = 2 * Math.PI * R, off = C * (1 - n / 100);
+  return `<svg viewBox="0 0 62 62"><circle class="track" cx="31" cy="31" r="${R}" fill="none" stroke-width="6"/>
+    <circle class="bar" cx="31" cy="31" r="${R}" fill="none" stroke-width="6" stroke-linecap="round"
+    stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg>
+    <div class="num">${n}<small>iš 100</small></div>`;
+}
+function renderChips(){
+  const opts = [['all','Visi'],['found','Rasti'],['missing','Trūksta'], ...Object.entries(CATS).map(([k,v]) => [k, v.label])];
+  $('chips').innerHTML = opts.map(([k,l]) =>
+    `<button class="chip" data-f="${k}" aria-pressed="${filter===k}">${esc(l)}</button>`).join('');
+}
+function cardHTML(p){
+  const f = state.found[p.id];
+  if(f){
+    return `<button class="card" data-id="${p.id}" aria-label="${esc(p.name)}, rasta">
+      <div class="pic">${f.thumb ? `<img src="${f.thumb}" alt="">` : `<span class="ph" style="filter:none;opacity:1">${CATS[p.cat].emoji}</span>`}</div>
+      <div class="nm">${esc(p.name)}</div><span class="tick">✓</span></button>`;
+  }
+  return `<button class="card missing" data-id="${p.id}" aria-label="${esc(p.name)}, dar nerasta">
+    <div class="pic"><span class="ph">${CATS[p.cat].emoji}</span></div>
+    <div class="nm">${esc(p.name)}</div></button>`;
+}
+function renderAlbum(){
+  const n = foundCount();
+  $('ring').innerHTML = ringSVG(n);
+  $('ring').setAttribute('aria-label', `Rasta ${n} iš 100 augalų`);
+  renderChips();
+  let html = '';
+  for(const [key, cat] of Object.entries(CATS)){
+    if(filter in CATS && filter !== key) continue;
+    const all = PLANTS.filter(p => p.cat === key);
+    const got = all.filter(p => state.found[p.id]).length;
+    let list = all;
+    if(filter === 'found') list = all.filter(p => state.found[p.id]);
+    if(filter === 'missing') list = all.filter(p => !state.found[p.id]);
+    if(!list.length) continue;
+    html += `<section class="section"><div class="section-head"><h2>${esc(cat.label)}</h2><span>${got}/${all.length}</span></div>
+      <div class="section-bar"><i style="width:${got/all.length*100}%;background:${cat.color}"></i></div>
+      <div class="grid">${list.map(cardHTML).join('')}</div></section>`;
+  }
+  if(!html){
+    html = filter === 'found'
+      ? `<div class="empty"><b>Albumas dar tuščias.</b><br>Paspausk žalią kamerą ir nufotografuok pirmą augalą.</div>`
+      : `<div class="empty"><b>Visi augalai rasti!</b></div>`;
+  }
+  $('album').innerHTML = html;
+}
+$('chips').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if(!b) return;
+  filter = b.dataset.f; renderAlbum();
+});
+$('album').addEventListener('click', e => {
+  const c = e.target.closest('.card'); if(c) openDetail(c.dataset.id);
+});
+
+// ============================================================
+// Pasiekimai
+// ============================================================
+let confirmReset = false;
+function renderStats(){
+  const n = foundCount(), r = rankFor(n), nx = nextRank(n);
+  const prevAt = r[0], nextAt = nx ? nx[0] : 100;
+  const pct = nx ? (n - prevAt) / (nextAt - prevAt) * 100 : 100;
+  let html = `<div class="rank-card"><small>Tavo rangas</small><h2>${esc(r[1])}</h2>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <p>${nx ? `Dar ${nextAt - n} ${nextAt - n === 1 ? 'augalas' : (nextAt - n < 10 ? 'augalai' : 'augalų')} iki rango „${esc(nx[1])}“.` : 'Surinkai visą šimtuką. Puiku!'}</p></div>`;
+  html += `<h3 class="stat-h">Pagal grupes</h3>`;
+  for(const [key, cat] of Object.entries(CATS)){
+    const all = PLANTS.filter(p => p.cat === key), got = all.filter(p => state.found[p.id]).length;
+    html += `<div class="cat-row"><span>${cat.emoji} ${esc(cat.label)}</span><span>${got}/${all.length}</span>
+      <div class="section-bar"><i style="width:${got/all.length*100}%;background:${cat.color}"></i></div></div>`;
+  }
+  if(state.others.length){
+    html += `<h3 class="stat-h">Kiti radiniai (${state.others.length})</h3><div class="grid">` +
+      state.others.slice().reverse().map(o => `<div class="card" style="cursor:default">
+        <div class="pic">${o.thumb ? `<img src="${o.thumb}" alt="">` : `<span class="ph">🌱</span>`}</div>
+        <div class="nm">${esc(o.name)}</div></div>`).join('') + `</div>`;
+  }
+  html += `<div class="reset">` + (confirmReset
+    ? `<div class="confirm"><span>Ištrinti visą albumą?</span><button class="btn danger" id="reset-yes" style="padding:10px 16px;min-height:44px;font-size:15px">Taip, ištrinti</button><button class="btn ghost" id="reset-no" style="padding:10px 16px;min-height:44px;font-size:15px">Ne</button></div>`
+    : `<button id="reset-ask">Pradėti iš naujo</button>`) + `</div>`;
+  $('stats').innerHTML = html;
+}
+$('stats').addEventListener('click', e => {
+  if(e.target.id === 'reset-ask'){ confirmReset = true; renderStats(); }
+  if(e.target.id === 'reset-no'){ confirmReset = false; renderStats(); }
+  if(e.target.id === 'reset-yes'){
+    state = {found:{}, others:[]}; saveState(); confirmReset = false;
+    renderAlbum(); renderStats(); toast('Albumas išvalytas.');
+  }
+});
+
+// ============================================================
+// Skirtukai
+// ============================================================
+function setTab(name){
+  $('screen-album').classList.toggle('active', name === 'album');
+  $('screen-stats').classList.toggle('active', name === 'stats');
+  $('tab-album').setAttribute('aria-current', name === 'album' ? 'page' : 'false');
+  $('tab-stats').setAttribute('aria-current', name === 'stats' ? 'page' : 'false');
+  if(name === 'stats'){ confirmReset = false; renderStats(); }
+  window.scrollTo(0, 0);
+}
+$('tab-album').onclick = () => setTab('album');
+$('tab-stats').onclick = () => setTab('stats');
+
+// ============================================================
+// Augalo kortelė (detalės)
+// ============================================================
+let targetId = null; // augalas, kurio ieškoma
+function openDetail(id){
+  const p = BY_ID[id], f = state.found[id], cat = CATS[p.cat];
+  $('detail').innerHTML = `<div class="sheet" role="document">
+    <div class="grab"></div>
+    <div class="big">${f && f.thumb ? `<img src="${f.thumb}" alt="${esc(p.name)}">` : `<span class="ph">${cat.emoji}</span>`}</div>
+    <h2>${esc(p.name)}</h2>
+    <div class="latin" style="color:var(--ink-soft);font-size:17px">${esc(p.latin)}</div>
+    <div class="meta">${esc(cat.label)}${f ? ' · rasta ' + esc(f.date || '') : ''}</div>
+    ${f && f.fact ? `<p style="margin:12px 0 0">${esc(f.fact)}</p>` : ''}
+    <p style="margin:12px 0 0"><b>${f ? 'Kaip atpažinti:' : 'Ko ieškoti:'}</b> ${esc(p.hint)}</p>
+    <div class="btn-row">
+      <button class="btn" id="detail-cam">${f ? 'Fotografuoti iš naujo' : 'Ieškoti ir fotografuoti'}</button>
+      <button class="btn ghost" id="detail-close">Uždaryti</button>
+    </div></div>`;
+  $('detail').classList.add('open');
+  $('detail-close').focus();
+}
+function closeDetail(){ $('detail').classList.remove('open'); }
+$('detail').addEventListener('click', e => {
+  if(e.target.id === 'detail' || e.target.id === 'detail-close') closeDetail();
+  if(e.target.id === 'detail-cam'){ closeDetail(); openCamera(); }
+});
+
+// ============================================================
+// Kamera
+// ============================================================
+let stream = null, busy = false;
+async function openCamera(){
+  $('camera').classList.add('open');
+  $('cam-fallback').classList.remove('show');
+  $('shutter').disabled = false;
+  document.body.style.overflow = 'hidden';
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    return showFallback('Ši naršyklė neleidžia naudoti kameros tiesiogiai.');
+  }
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:'environment'}, width:{ideal:1280}, height:{ideal:960}}, audio:false
+    });
+    $('video').srcObject = stream;
+    await $('video').play().catch(() => {});
+  }catch(e){
+    showFallback('Kamera neatsidarė. Leisk naršyklei naudoti kamerą arba nufotografuok telefono kamera.');
+  }
+}
+function showFallback(msg){
+  $('cam-fallback-msg').textContent = msg;
+  $('cam-fallback').classList.add('show');
+}
+function stopStream(){
+  if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
+  $('video').srcObject = null;
+}
+function closeCamera(){
+  stopStream();
+  $('camera').classList.remove('open');
+  document.body.style.overflow = '';
+}
+$('open-camera').onclick = () => openCamera();
+$('cam-close').onclick = closeCamera;
+$('shutter').onclick = () => {
+  const v = $('video');
+  if(busy || !v.videoWidth) return;
+  const photo = drawScaled(v, v.videoWidth, v.videoHeight, 768, 0.8);
+  runIdentify(photo);
+};
+$('pick-btn').onclick = () => $('pick-input').click();
+$('pick-btn2').onclick = () => $('pick-input').click();
+$('snap-btn').onclick = () => $('snap-input').click();
+for(const id of ['pick-input','snap-input']){
+  $(id).addEventListener('change', async e => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if(!file) return;
+    try{ runIdentify(await fileToJpeg(file)); }
+    catch(err){ toast('Nepavyko atidaryti nuotraukos.'); }
   });
 }
 
-async function onPhotoChosen(ev){
-  const file = ev.target.files[0];
-  if(!file) return;
-  const p = order[idx];
-  const dataUrl = await resizeImage(file);
-
-  cardEl.innerHTML = `
-    <div class="loading-wrap">
-      <img class="thumb" src="${dataUrl}">
-      <div class="spinner"></div>
-      <p class="loading-text">Tikrinama, ar tai ${p.name.toLowerCase()}...</p>
-    </div>
-  `;
-
-  const base64 = dataUrl.split(',')[1];
-
+// ============================================================
+// Atpažinimas
+// ============================================================
+async function identify(dataUrl){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 35000);
   try{
-    const response = await fetch(API_PROXY_URL, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+    const res = await fetch(API_PROXY_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'}, signal:ctrl.signal,
       body: JSON.stringify({
-        model:"claude-haiku-5-5",
-        max_tokens:300,
-        system:"Esi draugiškas gamtos gidas, padedantis vaikams žaidime atpažinti augalus. Tau bus pateikta nuotrauka ir augalo, kurio ieško žaidėjas, pavadinimas. Atsakyk TIK JSON objektu, be jokio papildomo teksto, kodo blokų ar paaiškinimų, tiksliai tokiu formatu: {\"match\": true arba false, \"feedback\": \"draugiškas, trumpas paaiškinimas lietuviškai, ne daugiau kaip 2 sakiniai, kodėl tai tas augalas arba ne, be kartojant taisykles\"}. Būk malonus net kai atsakymas neigiamas, ir jei nuotraukoje apskritai nėra jokio augalo, laikyk tai match:false.",
-        messages:[{
-          role:"user",
-          content:[
-            {type:"image", source:{type:"base64", media_type:"image/jpeg", data:base64}},
-            {type:"text", text:`Ar šioje nuotraukoje matomas augalas: ${p.name}?`}
-          ]
-        }]
+        model: MODEL, max_tokens: 400, system: SYSTEM_PROMPT,
+        messages:[{role:'user', content:[
+          {type:'image', source:{type:'base64', media_type:'image/jpeg', data:dataUrl.split(',')[1]}},
+          {type:'text', text:'Atpažink augalą šioje nuotraukoje.'}
+        ]}]
       })
     });
-    const data = await response.json();
-    const textBlock = (data.content||[]).find(b=>b.type==='text');
-    let parsed;
-    try{
-      const clean = (textBlock?.text||'').replace(/```json|```/g,'').trim();
-      parsed = JSON.parse(clean);
-    }catch(e){
-      parsed = {match:false, feedback:"Nepavyko atpažinti atsakymo. Pabandyk fotografuoti dar kartą, geresnėje šviesoje."};
-    }
-    results[idx] = {plant:p, match:!!parsed.match, feedback:parsed.feedback||''};
-    renderResult();
+    if(!res.ok) throw new Error('http ' + res.status);
+    const data = await res.json();
+    const txt = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const m = txt.match(/\{[\s\S]*\}/);
+    if(!m) throw new Error('parse');
+    return JSON.parse(m[0]);
+  } finally { clearTimeout(timer); }
+}
+
+async function runIdentify(photo){
+  busy = true;
+  stopStream();
+  $('camera').classList.remove('open');
+  renderResult('scan', {photo});
+  try{
+    const r = await identify(photo);
+    await handleResult(r, photo);
   }catch(err){
-    cardEl.innerHTML = `
-      <div class="loading-wrap">
-        <img class="thumb" src="${dataUrl}">
-        <p class="error-text">Nepavyko susisiekti su patikros tarnyba. Patikrink interneto ryšį ir bandyk dar kartą.</p>
-      </div>
-      <div class="actions">
-        <button class="primary" id="retryBtn" style="cursor:pointer;">Bandyti dar kartą</button>
-      </div>
-    `;
-    document.getElementById('retryBtn').onclick = renderHunt;
+    renderResult('error', {photo});
+  }finally{ busy = false; }
+}
+
+async function handleResult(r, photo){
+  const conf = ['high','medium','low'].includes(r.confidence) ? r.confidence : 'low';
+  const p = r.id && BY_ID[r.id] ? BY_ID[r.id] : null;
+  if(r.from_screen_or_print) return renderResult('screen', {photo});
+  if(!r.is_plant) return renderResult('noplant', {photo});
+  if(p && conf !== 'low'){
+    if(state.found[p.id]) return renderResult('dup', {photo, p, r});
+    const before = foundCount();
+    state.found[p.id] = {thumb: await makeThumb(photo), date: today(), fact: r.fact || '', conf};
+    const saved = saveState();
+    const after = foundCount();
+    const rankUp = rankFor(after)[1] !== rankFor(before)[1] ? rankFor(after)[1] : null;
+    renderAlbum();
+    return renderResult('new', {photo, p, r, rankUp, saved});
   }
-}
-
-function renderResult(){
-  const r = results[idx];
-  renderTrail();
-  cardEl.innerHTML = `
-    <div class="result-banner">
-      <div class="result-emblem ${r.match?'yes':'no'}">${r.match?'✓':'?'}</div>
-      <h2 class="result-title">${r.match ? 'Radai tikrą augalą!' : 'Dar ne visai'}</h2>
-      <p class="result-feedback">${r.feedback}</p>
-    </div>
-    <div class="actions">
-      ${!r.match ? '<label class="primary" for="fileInput2">📷 Fotografuoti dar kartą</label><input type="file" id="fileInput2" accept="image/*" capture="environment">' : ''}
-      <button class="${r.match?'primary':'ghost'}" id="nextBtn" ${r.match?'style="cursor:pointer;"':''}>${idx+1 < order.length ? 'Kitas augalas' : 'Baigti žaidimą'}</button>
-    </div>
-  `;
-  if(!r.match){
-    document.getElementById('fileInput2').onchange = onPhotoChosen;
+  if(conf === 'low') return renderResult('unsure', {photo, r, p});
+  // Tikras augalas, bet ne iš šimtuko
+  const name = r.name_lt || 'Nežinomas augalas';
+  if(!state.others.some(o => o.name.toLowerCase() === name.toLowerCase())){
+    state.others.push({name, latin: r.latin || '', date: today(), thumb: await makeThumb(photo)});
+    if(state.others.length > 40) state.others.shift();
+    saveState();
   }
-  document.getElementById('nextBtn').onclick = ()=>{
-    idx++;
-    idx < order.length ? renderHunt() : renderFinish();
-  };
+  return renderResult('other', {photo, r});
 }
 
-function renderFinish(){
-  const foundCount = results.filter(r=>r.match).length;
-  trailEl.innerHTML = order.map((p,i)=>{
-    const found = results[i] && results[i].match;
-    return `<div class="trail-dot ${found?'found':''}">${found?'✓':'·'}</div>`;
-  }).join('');
-  cardEl.innerHTML = `
-    <div class="finish-wrap">
-      <p class="finish-label">Ekspedicija baigta</p>
-      <p class="finish-score">${foundCount}<span> / ${order.length} augalų rasta</span></p>
-      <div class="recap">
-        ${order.map((p,i)=>{
-          const found = results[i] && results[i].match;
-          return `<div class="recap-row"><span class="recap-mark ${found?'yes':'no'}">${found?'✓':'–'}</span>${p.name}</div>`;
-        }).join('')}
-      </div>
-      <div class="actions">
-        <button class="primary" id="restartBtn" style="cursor:pointer;">Naujas maršrutas</button>
-      </div>
-    </div>
-  `;
-  document.getElementById('restartBtn').onclick = ()=>{
-    order = shuffle(PLANTS);
-    idx = 0;
-    results = [];
-    renderHunt();
-  };
+// ============================================================
+// Rezultato ekranas
+// ============================================================
+function renderResult(kind, d){
+  const n = foundCount();
+  const photoCls = kind === 'new' ? 'res-photo pop' : 'res-photo';
+  let body = '';
+  const progress = `<div class="progress-line"><b>Albume: ${n} iš 100</b><div class="bar"><i style="width:${n}%"></i></div></div>`;
+  const again = `<button class="btn" id="res-again">Fotografuoti dar</button>`;
+  const toAlbum = `<button class="btn ghost" id="res-album">Į albumą</button>`;
+  const r = d.r || {};
+
+  if(kind === 'scan'){
+    body = `<div class="scan-text">Skenuojama<span class="dots"><i>.</i><i>.</i><i>.</i></span><span>Claude žiūri, koks čia augalas.</span></div>`;
+  } else if(kind === 'new'){
+    body = `<span class="tag new">Naujas atradimas</span>
+      <h2>${esc(d.p.name)}</h2><div class="latin">${esc(d.p.latin)}</div>
+      <p class="fact">${esc(r.fact || '')}</p>
+      ${d.rankUp ? `<div class="rankup">Naujas rangas: ${esc(d.rankUp)}</div>` : ''}
+      ${progress}
+      ${d.saved === false ? `<p class="sub">Albumo šioje naršyklėje išsaugoti nepavyko, todėl užsidarius puslapiui jis dings.</p>` : ''}
+      <div class="btn-row">${again}${toAlbum}</div>`;
+  } else if(kind === 'dup'){
+    body = `<span class="tag">Jau turi šį augalą</span>
+      <h2>${esc(d.p.name)}</h2><div class="latin">${esc(d.p.latin)}</div>
+      <p class="fact">${esc(r.fact || '')}</p>${progress}
+      <div class="btn-row"><button class="btn" id="res-replace">Pakeisti nuotrauką albume</button>${again}${toAlbum}</div>`;
+  } else if(kind === 'other'){
+    body = `<span class="tag">Radinys ne iš šimtuko</span>
+      <h2>${esc(r.name_lt || 'Nežinomas augalas')}</h2>${r.latin ? `<div class="latin">${esc(r.latin)}</div>` : ''}
+      <p class="fact">${esc(r.fact || '')}</p>
+      <p class="sub">Šio augalo nėra tavo šimtuke, bet įrašėme jį į „Kitus radinius“ skiltyje Pasiekimai.</p>
+      <div class="btn-row">${again}${toAlbum}</div>`;
+  } else if(kind === 'unsure'){
+    const guess = d.p ? d.p.name : r.name_lt;
+    body = `<span class="tag warn">Nesu tikras</span>
+      <h2>${guess ? 'Gal tai ' + esc(guess) + '?' : 'Nepavyko atpažinti'}</h2>
+      <p class="fact">${esc(r.advice || 'Pabandyk nufotografuoti iš arčiau: lapą, žiedą ar žievę, esant geresnei šviesai.')}</p>
+      <div class="btn-row">${again}${toAlbum}</div>`;
+  } else if(kind === 'noplant'){
+    body = `<span class="tag warn">Čia nematau augalo</span>
+      <h2>Surask augalą</h2>
+      <p class="fact">Nutaikyk kamerą į lapus, žiedus ar žievę ir pabandyk dar kartą.</p>
+      <div class="btn-row">${again}${toAlbum}</div>`;
+  } else if(kind === 'screen'){
+    body = `<span class="tag warn">Tai nuotrauka ekrane ar popieriuje</span>
+      <h2>Reikia tikro augalo</h2>
+      <p class="fact">Išeik į lauką, į sodą ar prie palangės ir nufotografuok augalą gyvai.</p>
+      <div class="btn-row">${again}${toAlbum}</div>`;
+  } else if(kind === 'error'){
+    body = `<span class="tag warn">Nepavyko susisiekti</span>
+      <h2>Bandyk dar kartą</h2>
+      <p class="fact">Patikrink interneto ryšį. Nuotrauka dar nepamesta.</p>
+      <div class="btn-row"><button class="btn" id="res-retry">Bandyti dar kartą</button>${again}</div>`;
+  }
+
+  $('result').innerHTML = `<div class="${photoCls}"><img src="${d.photo}" alt="Tavo nuotrauka">
+    ${kind === 'scan' ? '<div class="scanline"></div>' : ''}</div>
+    <div class="res-body" aria-live="polite">${body}</div>`;
+  $('result').classList.add('open');
+  $('result').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  currentPhoto = d.photo; currentDup = d.p || null; currentR = d.r || null;
+  if(kind === 'new') lastNewId = d.p.id; else if(kind !== 'scan') lastNewId = null;
+}
+let currentPhoto = null, currentDup = null, currentR = null, lastNewId = null;
+
+function closeResult(){
+  $('result').classList.remove('open');
+  document.body.style.overflow = '';
+}
+$('result').addEventListener('click', async e => {
+  const id = e.target.id;
+  if(id === 'res-again'){ closeResult(); openCamera(); }
+  if(id === 'res-album'){ closeResult(); setTab('album'); flashNew(); }
+  if(id === 'res-retry'){ runIdentify(currentPhoto); }
+  if(id === 'res-replace' && currentDup){
+    state.found[currentDup.id].thumb = await makeThumb(currentPhoto);
+    if(currentR && currentR.fact) state.found[currentDup.id].fact = currentR.fact;
+    saveState(); renderAlbum(); toast('Nuotrauka pakeista.');
+    closeResult(); setTab('album');
+  }
+});
+function flashNew(){
+  if(!lastNewId) return;
+  if(filter === 'missing'){ filter = 'all'; renderAlbum(); }
+  const el = document.querySelector(`.card[data-id="${lastNewId}"]`);
+  if(el){ el.scrollIntoView({block:'center'}); el.classList.add('flash'); }
 }
 
-renderHunt();
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+  if($('detail').classList.contains('open')) closeDetail();
+  else if($('result').classList.contains('open') && !busy) closeResult();
+  else if($('camera').classList.contains('open')) closeCamera();
+});
+
+// ============================================================
+// Pradžia
+// ============================================================
+loadState();
+renderAlbum();
+if(!storageOk) toast('Šioje naršyklėje albumas nebus išsaugotas.');
 </script>
 </body>
 </html>
